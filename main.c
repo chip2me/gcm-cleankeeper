@@ -2,7 +2,7 @@
 /* Files to Include                                                           */
 /******************************************************************************/
 
-#include "cleankeeper.h"        /* System funct/params, like osc/peripheral config */
+#include "cleankeeper.h"   /* System funct/params, like osc/peripheral config */
 #include <htc.h>           /* Global Header File */
 #include "system.h"        /* System funct/params, like osc/peripheral config */
 #include "user.h"          /* User funct/params, such as InitApp */
@@ -29,12 +29,12 @@ void main(void)
 
 	/* Initialize I/O and Peripherals for application */
 	InitApp();
-    CleanKeeperInit();
+    CleanKeeperInit(); //Overwrites setup done in InitApp())
 
     //Endless loop
     while (1)
     {
-        CleanKeeperController();
+        CleanKeeperController(); //Application main loop
     }
 }
 
