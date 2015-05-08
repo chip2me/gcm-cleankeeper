@@ -3,6 +3,11 @@
 /******************************************************************************/
 #include "cleankeeper.h"
 
+#define false 0
+#define true 1
+#define CW 1
+#define CCW 0
+
 #define SECOND 30120l // 30120 long definition of ONE second 
 #define RUN_TIME (SECOND*20) 
 #define OVER_LOAD_TIME (SECOND*62)
@@ -42,14 +47,21 @@ void CleanKeeperController()
     static unsigned int iState;
     static unsigned long iTimer;
     static unsigned char bSignalRelay;
+    static unsigned char bSignalDirection;
+    static unsigned char bSignalOverloadLED;
     unsigned char bGreen, bRed;
     static long iOverLoadTimer;
     
-    //COMMON
-    //Read input
+//*****************************************************************************
+// COMMON PART PRE
+//*****************************************************************************
+    // Read input
     bGreen = GPIO0_PORT;
     bRed = GPIO1_PORT;
       
+//*****************************************************************************
+// STATE MACHINE PART
+//*****************************************************************************
     // Default - catch if state out of bounds
     if (iState == 0 )  
     {
@@ -65,29 +77,29 @@ void CleanKeeperController()
             //Set direction
             if (bGreen == 1)    // GREEN
             {
-                GPIO2_LAT = 1;  // Set GPIO for CW
+                bSignalDirection = CCW;  // Set for CW
             }
             else                // RED
             {
-                GPIO2_LAT = 0;  // Set GPIO for CCW            
+                bSignalDirection = CW;  // Set for CCW            
             }
             //Set next state
             iState = 2; 
         }
     }
-    //STATE SET 
+    // STATE SET 
     if (iState == 2)
     {
-        //Start Timer
+        // Start Timer
         iTimer = RUN_TIME; //20 seconds
-        //Start relay
+        // Start relay
         bSignalRelay = 1;
-        //Set next state
+        // Set next state
         if ((bGreen == 0) && (bRed == 0)) //both GREEN or RED NOT enabled
             iState = 3; 
     }
 
-    //STATE COUNT-DOWN 
+    // STATE COUNT-DOWN 
     if (iState == 3)
     {
         
@@ -98,49 +110,57 @@ void CleanKeeperController()
             iState = 4;                 
         }
         // If buttons pressed again:
-        if ((bGreen == 1) || (bRed == 1)) //only active if GREEN or RED is enabled
+        if ((bGreen == 1) || (bRed == 1)) // Either GREEN or RED is enabled
         {   
-            //Set direction
-            if (bGreen == 1)    // GREEN
-                GPIO2_LAT = 1;  // Set GPIO for CW
-            else                // RED
-                GPIO2_LAT = 0;  // Set GPIO for CCW
-            iState = 2; 
+            iState = 1; //Restart 
         }
     }
-    //STATE CLEAR 
+    // STATE CLEAR 
     if (iState == 4)
     {
-        //Stop relay
+        // Stop relay
         bSignalRelay = 0;
-        //Set next state
-        if ((bGreen == 0) && (bRed == 0)) //Ensure both GREEN or RED NOT enabled
-        {   
-            iState = 1; // Restart 
-        }
+        // Set next state
+        iState = 1; // Restart 
     }
 
-    //STATE OVERLOAD 
+    // STATE OVERLOAD 
     if (iState == 99)
     {
-        //Remark: iOverLoadTimer is decreased in general handle output state below
-        if ( iOverLoadTimer > 0 ) // continue until motor cooled down ...
+        // Remark: iOverLoadTimer is decreased in general handle output state below
+        if ( iOverLoadTimer > 0 ) // Continue until motor cooled down ...
         {
-            REL1 = 0; // Force motor driver OFF
-            GPIO3_LAT = 0; // OVERLOAD LAMPE LYSER
+            bSignalOverloadLED = true; // Request OVERLOAD LAMP OON
         }
         else
         {
-            GPIO3_LAT = 1;  // Sluk OVERLOAD lampe
+            bSignalOverloadLED = false; // Request OVERLOAD LAMP OFF
             iState = 4;     // State Clear     
         }
     }
    
+//*****************************************************************************
+// COMMON PART POST
+//*****************************************************************************
+
     // Handle Output
     if ((bSignalRelay == 1) && (iState != 99))
     {
-        //Start relay
+        // Start relay
         REL1 = 1; // Set relay (start motor driver) CommandSetRelay(0x01); (0x03 if both rel1 and trel2 on))
+
+        // Setup direction CW/CCW
+        if (bSignalDirection == CW)
+        {
+            GPIO2_LAT = 1;  // Set GPIO for CW
+        }
+        else
+        {
+            GPIO2_LAT = 0;  // Set GPIO for CCW            
+        }
+
+        // Overload off
+        GPIO3_LAT = 1;  // OVERLOAD LAMP OFF
 
         iOverLoadTimer++;
         if (iOverLoadTimer > OVER_LOAD_TIME)
@@ -151,8 +171,13 @@ void CleanKeeperController()
     
     if ((bSignalRelay == 0) || (iState == 99))
     {
-        //Stop relay
+        // Stop relay
         REL1 = 0; // Stop relay
+
+        if (iState == 99)
+        {
+            GPIO3_LAT = 0;  // OVERLOAD LAMP ON
+        }
         iOverLoadTimer--;
         if (iOverLoadTimer <= 0)
         {
