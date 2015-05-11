@@ -10,8 +10,9 @@
 
 #define SECOND 30120l // 30120 long definition of ONE second 
 #define RUN_TIME (SECOND*20) 
-#define OVER_LOAD_TIME (SECOND*62)
-#define PULSE_FREQ 850 // 850 Hz is approx. 55 rpm
+#define OVER_LOAD_TIME (SECOND*62)          // Wanted over load time
+#define OVER_LOAD_TIME_CONTINUE (SECOND*42) // When to re-activate overload
+#define PULSE_FREQ 850                      // 850 Hz is approx. 55 rpm
 
 /******************************************************************************/
 /* In/OUT
@@ -48,7 +49,7 @@ void CleanKeeperController()
     static unsigned long iTimer;
     static unsigned char bSignalRelay;
     static unsigned char bSignalDirection;
-    static unsigned char bSignalOverloadLED;
+    static unsigned char bSignalOverload;
     unsigned char bGreen, bRed;
     static long iOverLoadTimer;
     
@@ -65,7 +66,10 @@ void CleanKeeperController()
     // Default - catch if state out of bounds
     if (iState == 0 )  
     {
-        iState = 1;
+        if ((bGreen == 0) && (bRed == 0)) // Both REEN and RED released
+        {
+            iState = 1;
+        }
     }
 
     //STATE START (or RESTART) 
@@ -127,15 +131,15 @@ void CleanKeeperController()
     // STATE OVERLOAD 
     if (iState == 99)
     {
+        bSignalOverload = true; // Request OVERLOAD LAMP ON
+        bSignalRelay = 0; // Request motor driver off
+        
         // Remark: iOverLoadTimer is decreased in general handle output state below
-        if ( iOverLoadTimer > 0 ) // Continue until motor cooled down ...
+        // Continue when motor is cooled down ...
+        if ( iOverLoadTimer <= OVER_LOAD_TIME_CONTINUE ) 
         {
-            bSignalOverloadLED = true; // Request OVERLOAD LAMP OON
-        }
-        else
-        {
-            bSignalOverloadLED = false; // Request OVERLOAD LAMP OFF
-            iState = 4;     // State Clear     
+            bSignalOverload = false; // Request OVERLOAD LAMP OFF
+            iState = 0;     // Restart      
         }
     }
    
@@ -143,8 +147,15 @@ void CleanKeeperController()
 // COMMON PART POST
 //*****************************************************************************
 
-    // Handle Output
-    if ((bSignalRelay == 1) && (iState != 99))
+    // Check for overload
+    if ( iOverLoadTimer >= OVER_LOAD_TIME ) 
+    {
+        iState = 99;     // Enter overload state     
+    }
+    
+
+    // Handle Output based on signal settings
+    if (bSignalRelay == 1)
     {
         // Start relay
         REL1 = 1; // Set relay (start motor driver) CommandSetRelay(0x01); (0x03 if both rel1 and trel2 on))
@@ -159,35 +170,31 @@ void CleanKeeperController()
             GPIO2_LAT = 0;  // Set GPIO for CCW            
         }
 
-        // Overload off
-        GPIO3_LAT = 1;  // OVERLOAD LAMP OFF
-
         iOverLoadTimer++;
         if (iOverLoadTimer > OVER_LOAD_TIME)
         {
             iOverLoadTimer = OVER_LOAD_TIME; // Lower limit
         }
     }
-    
-    if ((bSignalRelay == 0) || (iState == 99))
+
+    if (bSignalRelay == 0)
     {
         // Stop relay
         REL1 = 0; // Stop relay
 
-        if (iState == 99)
-        {
-            GPIO3_LAT = 0;  // OVERLOAD LAMP ON
-        }
         iOverLoadTimer--;
         if (iOverLoadTimer <= 0)
         {
             iOverLoadTimer = 0; // Lower limit
         }
     }
-    
-    // If OVERLOAD then react using State 99
-    if (iOverLoadTimer >= OVER_LOAD_TIME)
+
+    if (bSignalOverload)
     {
-        iState = 99; // Overload State 
+            GPIO3_LAT = 0;  // OVERLOAD LAMP ON
+    }
+    else
+    {
+            GPIO3_LAT = 1;  // OVERLOAD LAMP OFF
     }
 }
