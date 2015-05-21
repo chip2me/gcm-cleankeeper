@@ -10,9 +10,9 @@
 
 #define SECOND 30120l // 30120 long definition of ONE second 
 #define RUN_TIME (SECOND*20) 
-#define OVER_LOAD_TIME (SECOND*62)          // Wanted over load time
-#define OVER_LOAD_TIME_CONTINUE (SECOND*42) // When to re-activate overload
-#define PULSE_FREQ 850                      // 850 Hz is approx. 55 rpm
+#define OVER_LOAD_TIME (SECOND*600)          // Wanted over load time
+#define OVER_LOAD_TIME_CONTINUE (SECOND*540) // When to re-activate overload
+#define PULSE_FREQ 700                      // 52,5rpm (850 Hz = 64 rpm, 750=55 rpm)
 
 /******************************************************************************/
 /* In/OUT
@@ -152,7 +152,6 @@ void CleanKeeperController()
     {
         iState = 99;     // Enter overload state     
     }
-    
 
     // Handle Output based on signal settings
     if (bSignalRelay == 1)
