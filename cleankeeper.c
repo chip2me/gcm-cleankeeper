@@ -12,7 +12,7 @@
 #define RUN_TIME (SECOND*20) 
 #define OVER_LOAD_TIME (SECOND*600)          // Wanted over load time
 #define OVER_LOAD_TIME_CONTINUE (SECOND*540) // When to re-activate overload
-#define PULSE_FREQ 700                      // 52,5rpm (850 Hz = 64 rpm, 750=55 rpm)
+#define PULSE_FREQ 675                      // 700=52,5rpm (650=48, 850=64, 750=55 rpm)
 
 /******************************************************************************/
 /* In/OUT
