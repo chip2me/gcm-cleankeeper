@@ -1,18 +1,64 @@
 /******************************************************************************/
 /* Files to Include                                                           */
 /******************************************************************************/
+/** TODO
+ * 
+ * DC Motor_____________________________________________________________________
+ * Setup input for selection between stepper and DC motor usage.
+ * Supply voltage, plus to REL1_com and minus to REL2_com
+ * DC_CW, REL1=1, REL2=0 (Motor+ to REL1_no and Motor- to REL2_nc)
+ * DC_CcW, REL1=0, REL2=1 (Motor+ to REL1_nc and Motor- to REL2_no)
+ * 
+ * Frekvens setup______________________________________________________________
+ * Finpudse Frequency. PWM frekvensen er ikke eksakt!
+ * 
+ * Temperaturovervågning:_______________________________________________________
+ * Use analog input for temperature measurement and compensate overload 
+ * calculations with actualk temperature.
+ */
+
+
 #include "cleankeeper.h"
 
+//GENERAL SETTINGS
 #define false 0
 #define true 1
 #define CW 1
 #define CCW 0
 
+//MOTOR SETTINGS
+#define MOTOR_STEP 200 // Stepper motor 1,8°
+#define MICRO_STEPS 4  // Stepper driver microsteps
+
+//TIME DEFINITIONS
 #define SECOND 30120l // 30120 long definition of ONE second 
+
+//USER SETTINGS
 #define RUN_TIME (SECOND*20) 
-#define OVER_LOAD_TIME (SECOND*600)          // Wanted over load time
-#define OVER_LOAD_TIME_CONTINUE (SECOND*540) // When to re-activate overload
-#define PULSE_FREQ 675                      // 700=52,5rpm (650=48, 850=64, 750=55 rpm)
+#define OVER_LOAD_TIME (SECOND*600)          // Wanted over load time 600
+#define OVER_LOAD_TIME_CONTINUE (SECOND*540) // When to re-activate overload 540
+#define MOTOR_RPM 50                        // Stepper motor speed (approx.)
+// Range [0 .. 69] and [69 .. ] // two different register setup
+
+
+/**
+ * Info regarding PWM out:
+ * Two formulaes for Freq <=920  or above
+ * Range is [???..???]Hz
+ * periode = (PR2+1)×4×Tosc×TMR2
+ * TMR2 er prescale value
+ * Tosc = 1 / Fosc
+ * (PR2+1) * 4 * 1/16M * TMR2
+ * Hvor PR2 er 0xC8, 200
+ * 200*4*1/16M*TMR2 =
+ * 5.025*10E-5 * 64 = 0.003216
+ * 
+ * 1/0.003216 = 310 Hz
+ * Se side 221
+ * Freq = 1 / (PR2+1)*4*1/16M*64
+ * 
+ * PR2 = ( 1 / Freq * 0.000016) -1
+*/
 
 /******************************************************************************/
 /* In/OUT
@@ -26,17 +72,47 @@
  * GPIO2/PIN5: Direction 
  * GPIO3/PIN6: Overload
  * GPIO3/PIN8: Pulse 
+ * 
+ * Reserved:
+ * Relay2 for DC motor usage
+ * Input
+ * 
  */
+
+
+
+/** Converting frequency to rpm for PL23 moons motor for CleanKeeper
+ * 1,8° step => 200 steps/rev
+ * Microstepping 4
+ * Equation: Hertz = (RPM/60)*Steps*Microsteps
+ * Hertz = RPM*K (where K=13,33 with acual constants)
+ */
+int ConvertRpm2Hz(int iRpm)
+{
+    long int iHertz;
+    const long int iScale=100;
+
+    iHertz = ((iRpm*iScale)/60)*MOTOR_STEP*MICRO_STEPS; // Scaled
+    iHertz = iHertz/iScale;
+
+    return iHertz;
+}
+
+
 
 // Init for CleanKeeper
 void CleanKeeperInit()
 {
+    int iHertz;
+    
     // Set output to init states
     GPIO3_LAT = 1; // Sluk OVERLOAD lampe
 
     //Start pulse out
-    PulseOut(PULSE_FREQ); // Output PWM pulse (duty cycle 50%)
+    iHertz = ConvertRpm2Hz(MOTOR_RPM);
+    PulseOut(iHertz); // Output PWM pulse (duty cycle 50%)
 }
+
 
     
 /******************************************************************************
@@ -158,7 +234,6 @@ void CleanKeeperController()
     {
         // Start relay
         REL1 = 1; // Set relay (start motor driver) CommandSetRelay(0x01); (0x03 if both rel1 and trel2 on))
-
         // Setup direction CW/CCW
         if (bSignalDirection == CW)
         {
@@ -180,7 +255,6 @@ void CleanKeeperController()
     {
         // Stop relay
         REL1 = 0; // Stop relay
-
         iOverLoadTimer--;
         if (iOverLoadTimer <= 0)
         {
@@ -197,3 +271,6 @@ void CleanKeeperController()
             GPIO3_LAT = 1;  // OVERLOAD LAMP OFF
     }
 }
+
+
+
