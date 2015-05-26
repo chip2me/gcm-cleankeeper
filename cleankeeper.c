@@ -122,19 +122,21 @@ void CleanKeeperInit()
 }
 
 
-    
+
 /******************************************************************************
  * CleanKeeper sequence     
  * Main Loop
  * 
- *      * *
- *  *         *
- * *           *
- *     MAIN     *
- *     LOOP     *
- * *           *
- *   *        *
- *      * *
+ *         *  *   
+ *     *          *
+ *  *                *
+ **                    * 
+ *         MAIN         *
+ *         LOOP         *
+ **                    *
+ *  *                *
+ *     *          *
+ *         *  *
  ******************************************************************************/
 void CleanKeeperController()
 {
@@ -159,7 +161,7 @@ void CleanKeeperController()
     // Default - catch if state out of bounds
     if (iState == 0 )  
     {
-        if ((bGreen == 0) && (bRed == 0)) // Both REEN and RED released
+        if ((bGreen == 0) && (bRed == 0)) // Both GREEN and RED released
         {
             iState = 1;
         }
@@ -171,7 +173,7 @@ void CleanKeeperController()
         if ((bGreen == 1) || (bRed == 1)) //only active if GREEN or RED is enabled
         {
             // Button has been activated.
-            //Set direction
+            // Set direction
             if (bGreen == 1)    // GREEN
             {
                 bSignalDirection = CCW;  // Set for CW
@@ -188,11 +190,11 @@ void CleanKeeperController()
     if (iState == 2)
     {
         // Start Timer
-        iTimer = RUN_TIME; //20 seconds
+        iTimer = RUN_TIME; // 20 seconds
         // Start relay
         bSignalRelay = 1;
         // Set next state
-        if ((bGreen == 0) && (bRed == 0)) //both GREEN or RED NOT enabled
+        if ((bGreen == 0) && (bRed == 0)) // Both GREEN or RED NOT enabled
         {
             iState = 3; 
         }
@@ -208,7 +210,7 @@ void CleanKeeperController()
             iState = 4;                 
         }
         // If buttons pressed again:
-        if ((bGreen == 1) || (bRed == 1)) // Either GREEN or RED is enabled
+        if ((bGreen == 1) || (bRed == 1)) // Either GREEN or RED enabled
         {   
             iState = 1; //Restart 
         }
@@ -228,7 +230,6 @@ void CleanKeeperController()
         bSignalOverload = true; // Request OVERLOAD LAMP ON
         bSignalRelay = 0; // Request motor driver off
         
-        // Remark: iOverLoadTimer is decreased in general handle output state below
         // Continue when motor is cooled down ...
         if ( iOverLoadTimer <= OVER_LOAD_TIME_CONTINUE ) 
         {
@@ -251,7 +252,8 @@ void CleanKeeperController()
     if (bSignalRelay == 1)
     {
         // Start relay
-        REL1 = 1; // Set relay (start motor driver) CommandSetRelay(0x01); (0x03 if both rel1 and trel2 on))
+        REL1 = 1; // Set relay (start motor driver)
+        
         // Setup direction CW/CCW
         if (bSignalDirection == CW)
         {
@@ -262,10 +264,11 @@ void CleanKeeperController()
             GPIO2_LAT = 0;  // Set GPIO for CCW            
         }
 
+        // Increase overload timer when motor is active
         iOverLoadTimer++;
         if (iOverLoadTimer > OVER_LOAD_TIME)
         {
-            iOverLoadTimer = OVER_LOAD_TIME; // Lower limit
+            iOverLoadTimer = OVER_LOAD_TIME; // Limit
         }
     }
 
@@ -273,6 +276,8 @@ void CleanKeeperController()
     {
         // Stop relay
         REL1 = 0; // Stop relay
+
+        // Decrease overload timer when motor is stopped
         iOverLoadTimer--;
         if (iOverLoadTimer <= 0)
         {
