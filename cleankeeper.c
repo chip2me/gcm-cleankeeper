@@ -37,7 +37,7 @@
 #define RUN_TIME (SECOND*20) 
 #define OVER_LOAD_TIME (SECOND*600)          // Wanted over load time 600
 #define OVER_LOAD_TIME_CONTINUE (SECOND*540) // When to re-activate overload 540
-#define MOTOR_RPM 50                        // Stepper motor speed (approx.)
+#define MOTOR_RPM 51                        // Stepper motor speed (approx.)
 // Range [0 .. 69] and [69 .. ] // two different register setup
 
 
@@ -76,7 +76,7 @@
  * Reserved:
  * Relay2 for DC motor usage
  * Input
- * 
+ *
  */
 
 
@@ -122,7 +122,7 @@ void CleanKeeperInit()
 void CleanKeeperController()
 {
     static unsigned int iState;
-    static unsigned long iTimer;
+    static long iTimer;
     static unsigned char bSignalRelay;
     static unsigned char bSignalDirection;
     static unsigned char bSignalOverload;
@@ -176,16 +176,17 @@ void CleanKeeperController()
         bSignalRelay = 1;
         // Set next state
         if ((bGreen == 0) && (bRed == 0)) //both GREEN or RED NOT enabled
+        {
             iState = 3; 
+        }
     }
 
     // STATE COUNT-DOWN 
     if (iState == 3)
     {
-        
         //Decrease timer until elapsed
         iTimer--;
-        if (iTimer == 0) // Timer elepsed
+        if (iTimer <= 0) // Timer elapsed
         {
             iState = 4;                 
         }
