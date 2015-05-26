@@ -114,7 +114,7 @@ void CleanKeeperInit()
     int iHertz;
     
     // Set output to init states
-    GPIO3_LAT = 1; // Sluk OVERLOAD lampe
+    GPIO3_LAT = 0; // OVERLOAD lamp OFF
 
     //Start pulse out
     iHertz = ConvertRpm2Hz(MOTOR_RPM);
@@ -287,11 +287,11 @@ void CleanKeeperController()
 
     if (bSignalOverload)
     {
-            GPIO3_LAT = 0;  // OVERLOAD LAMP ON
+            GPIO3_LAT = 1;  // OVERLOAD LAMP ON
     }
     else
     {
-            GPIO3_LAT = 1;  // OVERLOAD LAMP OFF
+            GPIO3_LAT = 0;  // OVERLOAD LAMP OFF
     }
 }
 
