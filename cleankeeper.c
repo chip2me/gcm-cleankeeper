@@ -1,7 +1,8 @@
 /******************************************************************************/
 /* Files to Include                                                           */
 /******************************************************************************/
-/** TODO
+/** 
+ * TODO:
  * 
  * DC Motor_____________________________________________________________________
  * Setup input for selection between stepper and DC motor usage.
@@ -9,12 +10,36 @@
  * DC_CW, REL1=1, REL2=0 (Motor+ to REL1_no and Motor- to REL2_nc)
  * DC_CcW, REL1=0, REL2=1 (Motor+ to REL1_nc and Motor- to REL2_no)
  * 
- * Frekvens setup______________________________________________________________
- * Finpudse Frequency. PWM frekvensen er ikke eksakt!
+ * Frequency setup______________________________________________________________
+ * Frequency. PWM freq is not exact!
  * 
- * Temperaturovervågning:_______________________________________________________
+ * Temperature monitoring:______________________________________________________
  * Use analog input for temperature measurement and compensate overload 
- * calculations with actualk temperature.
+ * calculations with actual temperature.
+ * 
+ * DOCUMENTATION:
+ * 
+ * Data size maximum check:
+ * unsigned long 32 bit +-2147483648
+ * 600 seconds is           18072000
+ * 
+ * Info regarding PWM out:
+ * Two formulaes for Freq <=920  or above
+ * Range is [???..???]Hz
+ * periode = (PR2+1)×4×Tosc×TMR2
+ * TMR2 er prescale value
+ * Tosc = 1 / Fosc
+ * (PR2+1) * 4 * 1/16M * TMR2
+ * Where PR2 is 200 (0xC8)
+ * 200*4*1/16M*TMR2 =
+ * 5.025*10E-5 * 64 = 0.003216
+ * 
+ * 1/0.003216 = 310 Hz
+ * Page 221
+ * Freq = 1 / (PR2+1)*4*1/16M*64
+ * 
+ * PR2 = ( 1 / Freq * 0.000016) -1
+ *  
  */
 
 
@@ -41,24 +66,6 @@
 // Range [0 .. 69] and [69 .. ] // two different register setup
 
 
-/**
- * Info regarding PWM out:
- * Two formulaes for Freq <=920  or above
- * Range is [???..???]Hz
- * periode = (PR2+1)×4×Tosc×TMR2
- * TMR2 er prescale value
- * Tosc = 1 / Fosc
- * (PR2+1) * 4 * 1/16M * TMR2
- * Hvor PR2 er 0xC8, 200
- * 200*4*1/16M*TMR2 =
- * 5.025*10E-5 * 64 = 0.003216
- * 
- * 1/0.003216 = 310 Hz
- * Se side 221
- * Freq = 1 / (PR2+1)*4*1/16M*64
- * 
- * PR2 = ( 1 / Freq * 0.000016) -1
-*/
 
 /******************************************************************************/
 /* In/OUT
@@ -100,7 +107,8 @@ int ConvertRpm2Hz(int iRpm)
 
 
 
-// Init for CleanKeeper
+/** Init for CleanKeeper
+ */
 void CleanKeeperInit()
 {
     int iHertz;
@@ -118,6 +126,15 @@ void CleanKeeperInit()
 /******************************************************************************
  * CleanKeeper sequence     
  * Main Loop
+ * 
+ *      * *
+ *  *         *
+ * *           *
+ *     MAIN     *
+ *     LOOP     *
+ * *           *
+ *   *        *
+ *      * *
  ******************************************************************************/
 void CleanKeeperController()
 {
