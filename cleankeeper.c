@@ -2,6 +2,7 @@
 /* Files to Include                                                           */
 /******************************************************************************/
 /** 
+ * _____________________________________________________________________________
  * TODO:
  * 
  * DC Motor_____________________________________________________________________
@@ -17,7 +18,12 @@
  * Use analog input for temperature measurement and compensate overload 
  * calculations with actual temperature.
  * 
- * DOCUMENTATION:
+ * Datalogging:_________________________________________________________________
+ * Use analog out to show distribution between CW and CCW 
+ * Monitor runtime and no. of activations.
+ * 
+ *______________________________________________________________________________ 
+ * DOCUMENTATION:_______________________________________________________________
  * 
  * Data size maximum check:
  * unsigned long 32 bit +-2147483648
@@ -59,11 +65,10 @@
 #define SECOND 30120l // 30120 long definition of ONE second 
 
 //USER SETTINGS
-#define RUN_TIME (SECOND*20) 
+#define RUN_TIME (SECOND*20)                 // 20 seconds run time 
 #define OVER_LOAD_TIME (SECOND*600)          // Wanted over load time 600
 #define OVER_LOAD_TIME_CONTINUE (SECOND*540) // When to re-activate overload 540
-#define MOTOR_RPM 51                        // Stepper motor speed (approx.)
-// Range [0 .. 69] and [69 .. ] // two different register setup
+#define MOTOR_RPM 51                         // Stepper motor speed (approx.)
 
 
 
