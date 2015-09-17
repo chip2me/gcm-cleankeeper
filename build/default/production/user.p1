@@ -3079,64 +3079,64 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;i2c.h: 25: char ReadByteI2C(void);
 [; ;i2c.h: 26: void WriteByteI2C(char data);
 [; ;i2c.h: 27: void WriteWordI2C(int data);
-"18 user.c
+"19 user.c
 [v _InitApp `(v ~T0 @X0 1 ef ]
-"19
+"20
 {
-[; ;user.c: 18: void InitApp(void)
-[; ;user.c: 19: {
+[; ;user.c: 19: void InitApp(void)
+[; ;user.c: 20: {
 [e :U _InitApp ]
 [f ]
-[; ;user.c: 20: InitGPIO();
-"20
-[e ( _InitGPIO ..  ]
-[; ;user.c: 21: InitAddress();
+[; ;user.c: 21: InitGPIO();
 "21
+[e ( _InitGPIO ..  ]
+[; ;user.c: 22: InitAddress();
+"22
 [e ( _InitAddress ..  ]
-[; ;user.c: 24: }
-"24
+[; ;user.c: 25: }
+"25
 [e :UE 342 ]
 }
-"26
-[v _InitI2C `(v ~T0 @X0 1 ef ]
 "27
+[v _InitI2C `(v ~T0 @X0 1 ef ]
+"28
 {
-[; ;user.c: 26: void InitI2C(void)
-[; ;user.c: 27: {
+[; ;user.c: 27: void InitI2C(void)
+[; ;user.c: 28: {
 [e :U _InitI2C ]
 [f ]
-[; ;user.c: 28: SSPCON2 = 0x01;
-"28
-[e = _SSPCON2 -> -> 1 `i `uc ]
-[; ;user.c: 29: SSPCON3 = 0x40;
+[; ;user.c: 29: SSPCON2 = 0x01;
 "29
-[e = _SSPCON3 -> -> 64 `i `uc ]
-[; ;user.c: 30: SSPSTAT = 0x80;
+[e = _SSPCON2 -> -> 1 `i `uc ]
+[; ;user.c: 30: SSPCON3 = 0x40;
 "30
-[e = _SSPSTAT -> -> 128 `i `uc ]
-[; ;user.c: 31: SSPADD = ADDRESS << 1;
+[e = _SSPCON3 -> -> 64 `i `uc ]
+[; ;user.c: 31: SSPSTAT = 0x80;
 "31
-[e = _SSPADD -> << -> _ADDRESS `i -> 1 `i `uc ]
-[; ;user.c: 32: SSPCON1 = 0x3E;
+[e = _SSPSTAT -> -> 128 `i `uc ]
+[; ;user.c: 32: SSPADD = ADDRESS << 1;
 "32
-[e = _SSPCON1 -> -> 62 `i `uc ]
-[; ;user.c: 33: }
+[e = _SSPADD -> << -> _ADDRESS `i -> 1 `i `uc ]
+[; ;user.c: 33: SSPCON1 = 0x3E;
 "33
+[e = _SSPCON1 -> -> 62 `i `uc ]
+[; ;user.c: 34: }
+"34
 [e :UE 343 ]
 }
-"35
-[v _InitGPIO `(v ~T0 @X0 1 ef ]
 "36
+[v _InitGPIO `(v ~T0 @X0 1 ef ]
+"37
 {
-[; ;user.c: 35: void InitGPIO(void)
-[; ;user.c: 36: {
+[; ;user.c: 36: void InitGPIO(void)
+[; ;user.c: 37: {
 [e :U _InitGPIO ]
 [f ]
-[; ;user.c: 37: ANSELC = 0x00;
-"37
-[e = _ANSELC -> -> 0 `i `uc ]
-[; ;user.c: 38: ANSELA = 0x00;
+[; ;user.c: 38: ANSELC = 0x00;
 "38
+[e = _ANSELC -> -> 0 `i `uc ]
+[; ;user.c: 39: ANSELA = 0x00;
+"39
 [e = _ANSELA -> -> 0 `i `uc ]
 [; ;user.c: 42: TRISA = 0x00;
 "42
@@ -3177,9 +3177,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;user.c: 59: OPTION_REGbits.nWPUEN = 0;
 "59
 [e = . . _OPTION_REGbits 0 5 -> -> 0 `i `uc ]
-[; ;user.c: 60: WPUAbits.WPUA = 0xFF;
+[; ;user.c: 60: WPUAbits.WPUA = 0x20;
 "60
-[e = . . _WPUAbits 1 0 -> -> 255 `i `uc ]
+[e = . . _WPUAbits 1 0 -> -> 32 `i `uc ]
 [; ;user.c: 61: TRISAbits.TRISA5 = 1;
 "61
 [e = . . _TRISAbits 0 5 -> -> 1 `i `uc ]
@@ -3883,7 +3883,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;user.c: 292: break;
 "292
 [e $U 363  ]
-[; ;user.c: 293: case 4:
+[; ;user.c: 293: case 3:
 "293
 [e :U 368 ]
 [; ;user.c: 294: TRISAbits.TRISA4 = 1;
@@ -3922,7 +3922,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e [\ _channel , $ -> -> 0 `i `uc 365
  , $ -> -> 1 `i `uc 366
  , $ -> -> 2 `i `uc 367
- , $ -> -> 4 `i `uc 368
+ , $ -> -> 3 `i `uc 368
  , $ -> -> 7 `i `uc 369
  370 ]
 "303
@@ -4008,7 +4008,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;user.c: 333: break;
 "333
 [e $U 377  ]
-[; ;user.c: 334: case 4:
+[; ;user.c: 334: case 3:
 "334
 [e :U 382 ]
 [; ;user.c: 335: ANSELAbits.ANSA4 = 0;
@@ -4041,7 +4041,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e [\ _channel , $ -> -> 0 `i `uc 379
  , $ -> -> 1 `i `uc 380
  , $ -> -> 2 `i `uc 381
- , $ -> -> 4 `i `uc 382
+ , $ -> -> 3 `i `uc 382
  , $ -> -> 7 `i `uc 383
  384 ]
 "342
@@ -4054,52 +4054,49 @@ Version 3.2 HI-TECH Software Intermediate Code
 "345
 [e :UE 362 ]
 }
-"350
+"351
 [v _Wait_ms `(i ~T0 @X0 1 ef1`i ]
-"351
-{
-[; ;user.c: 350: Wait_ms(int iDelay)
-[; ;user.c: 351: {
-[e :U _Wait_ms ]
-"350
-[v _iDelay `i ~T0 @X0 1 r1 ]
-"351
-[f ]
 "352
+{
+[; ;user.c: 351: Wait_ms(int iDelay)
+[; ;user.c: 352: {
+[e :U _Wait_ms ]
+"351
+[v _iDelay `i ~T0 @X0 1 r1 ]
+"352
+[f ]
+"353
 [v _iCount `i ~T0 @X0 1 a ]
 [v _iInnerCount `i ~T0 @X0 1 a ]
-"353
+"354
 [v F3016 `Ci ~T0 @X0 1 s iWAIT ]
 [i F3016
 -> 116 `i
 ]
-[; ;user.c: 352: int iCount, iInnerCount;
-[; ;user.c: 353: const int iWAIT = 116;
-[; ;user.c: 355: for(iCount = 0; iCount < iDelay; iCount++)
-"355
+[; ;user.c: 353: int iCount, iInnerCount;
+[; ;user.c: 354: const int iWAIT = 116;
+[; ;user.c: 356: for(iCount = 0; iCount < iDelay; iCount++)
+"356
 {
 [e = _iCount -> 0 `i ]
 [e $U 389  ]
-"356
-[e :U 386 ]
-[; ;user.c: 356: {
-{
-[; ;user.c: 357: asm("NOP");
 "357
+[e :U 386 ]
+[; ;user.c: 357: {
+{
+[; ;user.c: 358: asm("NOP");
+"358
 [; <" NOP ;# ">
-[; ;user.c: 359: for(iInnerCount = 0; iInnerCount < iWAIT; iInnerCount++)
-"359
+[; ;user.c: 360: for(iInnerCount = 0; iInnerCount < iWAIT; iInnerCount++)
+"360
 {
 [e = _iInnerCount -> 0 `i ]
 [e $ < _iInnerCount F3016 390  ]
 [e $U 391  ]
-"360
-[e :U 390 ]
-[; ;user.c: 360: {
-{
-[; ;user.c: 361: asm("NOP");
 "361
-[; <" NOP ;# ">
+[e :U 390 ]
+[; ;user.c: 361: {
+{
 [; ;user.c: 362: asm("NOP");
 "362
 [; <" NOP ;# ">
@@ -4115,172 +4112,178 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;user.c: 366: asm("NOP");
 "366
 [; <" NOP ;# ">
+[; ;user.c: 367: asm("NOP");
 "367
+[; <" NOP ;# ">
+"368
 }
-"359
+"360
 [e ++ _iInnerCount -> 1 `i ]
 [e $ < _iInnerCount F3016 390  ]
 [e :U 391 ]
-"367
-}
 "368
 }
-"355
+"369
+}
+"356
 [e ++ _iCount -> 1 `i ]
 [e :U 389 ]
 [e $ < _iCount _iDelay 386  ]
 [e :U 387 ]
-"368
+"369
 }
-[; ;user.c: 367: }
 [; ;user.c: 368: }
 [; ;user.c: 369: }
-"369
+[; ;user.c: 370: }
+"370
 [e :UE 385 ]
 }
-"374
+"377
 [v _LimitFreq `(ui ~T0 @X0 1 ef1`ui ]
-"375
-{
-[; ;user.c: 374: unsigned int LimitFreq(unsigned int iFreq)
-[; ;user.c: 375: {
-[e :U _LimitFreq ]
-"374
-[v _iFreq `ui ~T0 @X0 1 r1 ]
-"375
-[f ]
-"376
-[v _iLimited `ui ~T0 @X0 1 a ]
-[; ;user.c: 376: unsigned int iLimited;
-[; ;user.c: 378: if (iFreq <= 245)
 "378
-[e $ ! <= _iFreq -> -> 245 `i `ui 394  ]
-[; ;user.c: 379: iLimited = 250;
+{
+[; ;user.c: 377: unsigned int LimitFreq(unsigned int iFreq)
+[; ;user.c: 378: {
+[e :U _LimitFreq ]
+"377
+[v _iFreq `ui ~T0 @X0 1 r1 ]
+"378
+[f ]
 "379
+[v _iLimited `ui ~T0 @X0 1 a ]
+[; ;user.c: 379: unsigned int iLimited;
+[; ;user.c: 381: if (iFreq <= 245)
+"381
+[e $ ! <= _iFreq -> -> 245 `i `ui 394  ]
+[; ;user.c: 382: iLimited = 250;
+"382
 [e = _iLimited -> -> 250 `i `ui ]
 [e $U 395  ]
-"380
+"383
 [e :U 394 ]
-[; ;user.c: 380: else if ((iFreq >= 920) && (iFreq <= 1000))
+[; ;user.c: 383: else if ((iFreq >= 920) && (iFreq <= 1000))
 [e $ ! && >= _iFreq -> -> 920 `i `ui <= _iFreq -> -> 1000 `i `ui 396  ]
-[; ;user.c: 381: iLimited = 1001;
-"381
+[; ;user.c: 384: iLimited = 1001;
+"384
 [e = _iLimited -> -> 1001 `i `ui ]
 [e $U 397  ]
-"382
+"385
 [e :U 396 ]
-[; ;user.c: 382: else if (iFreq >= 10000)
+[; ;user.c: 385: else if (iFreq >= 10000)
 [e $ ! >= _iFreq -> -> 10000 `i `ui 398  ]
-[; ;user.c: 383: iLimited = 10000;
-"383
+[; ;user.c: 386: iLimited = 10000;
+"386
 [e = _iLimited -> -> 10000 `i `ui ]
 [e $U 399  ]
-"384
+"387
 [e :U 398 ]
-[; ;user.c: 384: else
-[; ;user.c: 385: iLimited = iFreq;
-"385
+[; ;user.c: 387: else
+[; ;user.c: 388: iLimited = iFreq;
+"388
 [e = _iLimited _iFreq ]
 [e :U 399 ]
 [e :U 397 ]
 [e :U 395 ]
-[; ;user.c: 386: return iLimited;
-"386
+[; ;user.c: 389: return iLimited;
+"389
 [e ) _iLimited ]
 [e $UE 393  ]
-[; ;user.c: 387: }
-"387
+[; ;user.c: 390: }
+"390
 [e :UE 393 ]
 }
-"389
+"394
 [v _SetPWMDutyCycle `(v ~T0 @X0 1 ef1`ui ]
-"390
+"395
 {
-[; ;user.c: 389: void SetPWMDutyCycle(unsigned int DutyCycle)
-[; ;user.c: 390: {
+[; ;user.c: 394: void SetPWMDutyCycle(unsigned int DutyCycle)
+[; ;user.c: 395: {
 [e :U _SetPWMDutyCycle ]
-"389
+"394
 [v _DutyCycle `ui ~T0 @X0 1 r1 ]
-"390
+"395
 [f ]
-[; ;user.c: 391: PWM2DCH = DutyCycle;
-"391
+[; ;user.c: 396: PWM2DCH = DutyCycle;
+"396
 [e = _PWM2DCH -> _DutyCycle `uc ]
-[; ;user.c: 392: PWM2DCL = 0x00;
-"392
+[; ;user.c: 397: PWM2DCL = 0x00;
+"397
 [e = _PWM2DCL -> -> 0 `i `uc ]
-[; ;user.c: 393: }
-"393
+[; ;user.c: 398: }
+"398
 [e :UE 400 ]
 }
-"398
+"404
 [v _PulseOut `(v ~T0 @X0 1 ef1`ui ]
-"399
-{
-[; ;user.c: 398: void PulseOut(unsigned int iFreq)
-[; ;user.c: 399: {
-[e :U _PulseOut ]
-"398
-[v _iFreq `ui ~T0 @X0 1 r1 ]
-"399
-[f ]
-"400
-[v _iPR2 `ui ~T0 @X0 1 a ]
-"401
-[v _iLimitedFreq `ui ~T0 @X0 1 a ]
-[; ;user.c: 400: unsigned int iPR2;
-[; ;user.c: 401: unsigned int iLimitedFreq;
-[; ;user.c: 403: iLimitedFreq = LimitFreq(iFreq);
-"403
-[e = _iLimitedFreq ( _LimitFreq (1 _iFreq ]
-[; ;user.c: 405: TRISC = 0b11100111;
 "405
-[e = _TRISC -> -> 231 `i `uc ]
-[; ;user.c: 406: TRISCbits.TRISC3 = 0;
+{
+[; ;user.c: 404: void PulseOut(unsigned int iFreq)
+[; ;user.c: 405: {
+[e :U _PulseOut ]
+"404
+[v _iFreq `ui ~T0 @X0 1 r1 ]
+"405
+[f ]
 "406
-[e = . . _TRISCbits 0 3 -> -> 0 `i `uc ]
-[; ;user.c: 407: PWM2CON = 0xC0;
+[v _iPR2 `ui ~T0 @X0 1 a ]
 "407
-[e = _PWM2CON -> -> 192 `i `uc ]
-[; ;user.c: 408: PIR2 = 0x00;
-"408
-[e = _PIR2 -> -> 0 `i `uc ]
-[; ;user.c: 409: SetPWMDutyCycle(64);
+[v _iLimitedFreq `ui ~T0 @X0 1 a ]
+[; ;user.c: 406: unsigned int iPR2;
+[; ;user.c: 407: unsigned int iLimitedFreq;
+[; ;user.c: 409: iLimitedFreq = LimitFreq(iFreq);
 "409
-[e ( _SetPWMDutyCycle (1 -> -> 64 `i `ui ]
-[; ;user.c: 412: if (iLimitedFreq<=920)
-"412
-[e $ ! <= _iLimitedFreq -> -> 920 `i `ui 402  ]
-[; ;user.c: 413: {
-"413
-{
-[; ;user.c: 414: PR2 = (1/(iLimitedFreq*0.000016)-1);
+[e = _iLimitedFreq ( _LimitFreq (1 _iFreq ]
+[; ;user.c: 414: TRISCbits.TRISC3 = 0;
 "414
-[e = _PR2 -> - / -> -> 1 `i `d * -> _iLimitedFreq `d .0.000016 -> -> 1 `i `d `uc ]
-[; ;user.c: 415: T2CON = 0x07;
+[e = . . _TRISCbits 0 3 -> -> 0 `i `uc ]
+[; ;user.c: 415: PWM2CON = 0xC0;
 "415
-[e = _T2CON -> -> 7 `i `uc ]
+[e = _PWM2CON -> -> 192 `i `uc ]
+[; ;user.c: 416: PIR2 = 0x00;
 "416
-}
-[; ;user.c: 416: }
-[e $U 403  ]
-"417
-[e :U 402 ]
-[; ;user.c: 417: else
-[; ;user.c: 418: {
-"418
-{
-[; ;user.c: 419: PR2 = (1/(iLimitedFreq*0.000004)-1);
-"419
-[e = _PR2 -> - / -> -> 1 `i `d * -> _iLimitedFreq `d .0.000004 -> -> 1 `i `d `uc ]
-[; ;user.c: 420: T2CON = 0x06;
+[e = _PIR2 -> -> 0 `i `uc ]
+[; ;user.c: 420: if (iLimitedFreq<=920)
 "420
-[e = _T2CON -> -> 6 `i `uc ]
+[e $ ! <= _iLimitedFreq -> -> 920 `i `ui 402  ]
+[; ;user.c: 421: {
 "421
+{
+[; ;user.c: 422: PR2 = (1/(iLimitedFreq*0.000016)-1);
+"422
+[e = _PR2 -> - / -> -> 1 `i `d * -> _iLimitedFreq `d .0.000016 -> -> 1 `i `d `uc ]
+[; ;user.c: 423: T2CON = 0x07;
+"423
+[e = _T2CON -> -> 7 `i `uc ]
+"424
+}
+[; ;user.c: 424: }
+[e $U 403  ]
+"425
+[e :U 402 ]
+[; ;user.c: 425: else
+[; ;user.c: 426: {
+"426
+{
+[; ;user.c: 427: PR2 = (1/(iLimitedFreq*0.000004)-1);
+"427
+[e = _PR2 -> - / -> -> 1 `i `d * -> _iLimitedFreq `d .0.000004 -> -> 1 `i `d `uc ]
+[; ;user.c: 428: T2CON = 0x06;
+"428
+[e = _T2CON -> -> 6 `i `uc ]
+"429
 }
 [e :U 403 ]
-[; ;user.c: 421: }
-[; ;user.c: 422: }
-"422
+[; ;user.c: 429: }
+[; ;user.c: 430: iPR2 = PR2;
+"430
+[e = _iPR2 -> _PR2 `ui ]
+[; ;user.c: 431: iPR2=iPR2/2;
+"431
+[e = _iPR2 / _iPR2 -> -> 2 `i `ui ]
+[; ;user.c: 432: SetPWMDutyCycle(iPR2);
+"432
+[e ( _SetPWMDutyCycle (1 _iPR2 ]
+[; ;user.c: 433: }
+"433
 [e :UE 401 ]
 }

@@ -22,10 +22,10 @@
                    projectFiles="true">
       <itemPath>configuration_bits.c</itemPath>
       <itemPath>interrupts.c</itemPath>
-      <itemPath>main.c</itemPath>
       <itemPath>system.c</itemPath>
       <itemPath>user.c</itemPath>
       <itemPath>cleankeeper.c</itemPath>
+      <itemPath>main.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

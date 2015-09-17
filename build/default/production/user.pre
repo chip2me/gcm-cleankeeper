@@ -3937,7 +3937,7 @@ char ReadByteI2C(void);
 void WriteByteI2C(char data);
 void WriteWordI2C(int data);
 
-# 18 "user.c"
+# 19 "user.c"
 void InitApp(void)
 {
 InitGPIO();
@@ -3961,7 +3961,6 @@ ANSELC = 0x00;
 ANSELA = 0x00;
 
 
-
 TRISA = 0x00;
 TRISC = 0xFF;
 
@@ -3980,7 +3979,7 @@ LATCbits.LATC4 = 0;
 LATCbits.LATC2 = 0;
 
 OPTION_REGbits.nWPUEN = 0;
-WPUAbits.WPUA = 0xFF;
+WPUAbits.WPUA = 0x20;
 TRISAbits.TRISA5 = 1;
 LATAbits.LATA5 = 0;
 }
@@ -4213,7 +4212,7 @@ case 2:
 TRISAbits.TRISA2 = 1;
 ANSELAbits.ANSA2 = 1;
 break;
-case 4:
+case 3:
 TRISAbits.TRISA4 = 1;
 ANSELAbits.ANSA4 = 1;
 break;
@@ -4254,7 +4253,7 @@ break;
 case 2:
 ANSELAbits.ANSA2 = 0;
 break;
-case 4:
+case 3:
 ANSELAbits.ANSA4 = 0;
 break;
 case 7:
@@ -4267,9 +4266,7 @@ break;
 return data;
 }
 
-
-
-
+# 351
 Wait_ms(int iDelay)
 {
 int iCount, iInnerCount;
@@ -4291,7 +4288,7 @@ asm("NOP");
 }
 }
 
-# 374
+# 377
 unsigned int LimitFreq(unsigned int iFreq)
 {
 unsigned int iLimited;
@@ -4307,15 +4304,15 @@ iLimited = iFreq;
 return iLimited;
 }
 
+
+
 void SetPWMDutyCycle(unsigned int DutyCycle)
 {
 PWM2DCH = DutyCycle;
 PWM2DCL = 0x00;
 }
 
-
-
-
+# 404
 void PulseOut(unsigned int iFreq)
 {
 unsigned int iPR2;
@@ -4323,11 +4320,13 @@ unsigned int iLimitedFreq;
 
 iLimitedFreq = LimitFreq(iFreq);
 
-TRISC = 0b11100111;
+
+
+
 TRISCbits.TRISC3 = 0;
 PWM2CON = 0xC0;
 PIR2 = 0x00;
-SetPWMDutyCycle(64);
+
 
 
 if (iLimitedFreq<=920)
@@ -4340,5 +4339,8 @@ else
 PR2 = (1/(iLimitedFreq*0.000004)-1);
 T2CON = 0x06;
 }
+iPR2 = PR2;
+iPR2=iPR2/2;
+SetPWMDutyCycle(iPR2);
 }
 

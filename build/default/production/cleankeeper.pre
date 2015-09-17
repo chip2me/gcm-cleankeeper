@@ -3844,34 +3844,57 @@ unsigned int LimitFreq(unsigned int iFreq);
 void CleanKeeperInit(void);
 void CleanKeeperController(void);
 
-# 26 "cleankeeper.c"
-void CleanKeeperInit()
+# 104 "cleankeeper.c"
+int ConvertRpm2Hz(int iRpm)
 {
+long int iHertz;
+const long int iScale=100;
 
-LATAbits.LATA4 = 1;
+iHertz = ((iRpm*iScale)/60)*200*4;
+iHertz = iHertz/iScale;
 
-
-PulseOut(850);
+return iHertz;
 }
 
-# 40
+# 119
+void CleanKeeperInit()
+{
+int iHertz;
+
+
+LATAbits.LATA4 = 0;
+
+
+iHertz = ConvertRpm2Hz(51);
+if (PORTAbits.RA0 == 1)
+iHertz*=4;
+if (PORTAbits.RA1 == 1)
+iHertz*=16;
+PulseOut(iHertz);
+}
+
+# 152
 void CleanKeeperController()
 {
 static unsigned int iState;
 static unsigned long iTimer;
 static unsigned char bSignalRelay;
+static unsigned char bSignalDirection;
+static unsigned char bSignalOverload;
 unsigned char bGreen, bRed;
 static long iOverLoadTimer;
 
-
-
+# 166
 bGreen = PORTAbits.RA0;
 bRed = PORTAbits.RA1;
 
-
-if (iState == 0 )
+# 173
+if ((iState == 0) || (iState >5))
+{
+if ((bGreen == 0) && (bRed == 0))
 {
 iState = 1;
+}
 }
 
 
@@ -3883,11 +3906,11 @@ if ((bGreen == 1) || (bRed == 1))
 
 if (bGreen == 1)
 {
-LATAbits.LATA2 = 1;
+bSignalDirection = 0;
 }
 else
 {
-LATAbits.LATA2 = 0;
+bSignalDirection = 1;
 }
 
 iState = 2;
@@ -3897,18 +3920,19 @@ iState = 2;
 if (iState == 2)
 {
 
-iTimer = (30120l*20);
+iTimer = (30120l*5);
 
 bSignalRelay = 1;
 
 if ((bGreen == 0) && (bRed == 0))
+{
 iState = 3;
+}
 }
 
 
 if (iState == 3)
 {
-
 
 iTimer--;
 if (iTimer == 0)
@@ -3918,12 +3942,7 @@ iState = 4;
 
 if ((bGreen == 1) || (bRed == 1))
 {
-
-if (bGreen == 1)
-LATAbits.LATA2 = 1;
-else
-LATAbits.LATA2 = 0;
-iState = 2;
+iState = 1;
 }
 }
 
@@ -3932,45 +3951,59 @@ if (iState == 4)
 
 bSignalRelay = 0;
 
-if ((bGreen == 0) && (bRed == 0))
-{
 iState = 1;
 }
-}
 
 
-if (iState == 99)
+if (iState == 5)
 {
+bSignalOverload = 1;
+bSignalRelay = 0;
 
-if ( iOverLoadTimer > 0 )
+
+if ( iOverLoadTimer <= (30120l*18) )
 {
-LATCbits.LATC4 = 0;
-LATAbits.LATA4 = 0;
+bSignalOverload = 0;
+iState = 0;
 }
-else
+}
+
+# 257
+if ( iOverLoadTimer >= (30120l*20) )
 {
-LATAbits.LATA4 = 1;
-iState = 4;
-}
+iState = 5;
 }
 
 
-if ((bSignalRelay == 1) && (iState != 99))
+if (bSignalRelay == 1)
 {
 
 LATCbits.LATC4 = 1;
 
-iOverLoadTimer++;
-if (iOverLoadTimer > (30120l*62))
+
+if (bSignalDirection == 1)
 {
-iOverLoadTimer = (30120l*62);
+LATAbits.LATA2 = 1;
+}
+else
+{
+LATAbits.LATA2 = 0;
+}
+
+
+iOverLoadTimer++;
+if (iOverLoadTimer > (30120l*20))
+{
+iOverLoadTimer = (30120l*20);
 }
 }
 
-if ((bSignalRelay == 0) || (iState == 99))
+if (bSignalRelay == 0)
 {
 
 LATCbits.LATC4 = 0;
+
+
 iOverLoadTimer--;
 if (iOverLoadTimer <= 0)
 {
@@ -3978,9 +4011,12 @@ iOverLoadTimer = 0;
 }
 }
 
-
-if (iOverLoadTimer >= (30120l*62))
+if (bSignalOverload)
 {
-iState = 99;
+LATAbits.LATA4 = 1;
+}
+else
+{
+LATAbits.LATA4 = 0;
 }
 }

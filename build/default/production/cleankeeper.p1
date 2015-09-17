@@ -7,9 +7,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [n S95 . . ]
 "1663
 [v _LATAbits `VS95 ~T0 @X0 0 e@268 ]
-"191 user.h
-[v _PulseOut `(v ~T0 @X0 0 ef1`ui ]
-"420 C:\Program Files (x86)\Microchip\xc8\v1.34\include\pic16f1503.h
+"420
 [s S30 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
 [n S30 . RA0 RA1 RA2 RA3 RA4 RA5 ]
 "419
@@ -17,7 +15,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 [n S29 . . ]
 "429
 [v _PORTAbits `VS29 ~T0 @X0 0 e@12 ]
-"1698
+"191 user.h
+[v _PulseOut `(v ~T0 @X0 0 ef1`ui ]
+"1698 C:\Program Files (x86)\Microchip\xc8\v1.34\include\pic16f1503.h
 [s S98 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
 [n S98 . LATC0 LATC1 LATC2 LATC3 LATC4 LATC5 ]
 "1697
@@ -2853,332 +2853,426 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;user.h: 192: unsigned int LimitFreq(unsigned int iFreq);
 [; ;cleankeeper.h: 9: void CleanKeeperInit(void);
 [; ;cleankeeper.h: 10: void CleanKeeperController(void);
-"26 cleankeeper.c
-[v _CleanKeeperInit `(v ~T0 @X0 1 ef ]
-"27
+"104 cleankeeper.c
+[v _ConvertRpm2Hz `(i ~T0 @X0 1 ef1`i ]
+"105
 {
-[; ;cleankeeper.c: 26: void CleanKeeperInit()
-[; ;cleankeeper.c: 27: {
-[e :U _CleanKeeperInit ]
+[; ;cleankeeper.c: 104: int ConvertRpm2Hz(int iRpm)
+[; ;cleankeeper.c: 105: {
+[e :U _ConvertRpm2Hz ]
+"104
+[v _iRpm `i ~T0 @X0 1 r1 ]
+"105
 [f ]
-[; ;cleankeeper.c: 29: LATAbits.LATA4 = 1;
-"29
-[e = . . _LATAbits 0 4 -> -> 1 `i `uc ]
-[; ;cleankeeper.c: 32: PulseOut(850);
-"32
-[e ( _PulseOut (1 -> -> 850 `i `ui ]
-[; ;cleankeeper.c: 33: }
-"33
+"106
+[v _iHertz `l ~T0 @X0 1 a ]
+"107
+[v F2958 `Cl ~T0 @X0 1 s iScale ]
+[i F2958
+-> -> 100 `i `l
+]
+[; ;cleankeeper.c: 106: long int iHertz;
+[; ;cleankeeper.c: 107: const long int iScale=100;
+[; ;cleankeeper.c: 109: iHertz = ((iRpm*iScale)/60)*200*4;
+"109
+[e = _iHertz * * / * -> _iRpm `l F2958 -> -> 60 `i `l -> -> 200 `i `l -> -> 4 `i `l ]
+[; ;cleankeeper.c: 110: iHertz = iHertz/iScale;
+"110
+[e = _iHertz / _iHertz F2958 ]
+[; ;cleankeeper.c: 112: return iHertz;
+"112
+[e ) -> _iHertz `i ]
+[e $UE 342  ]
+[; ;cleankeeper.c: 113: }
+"113
 [e :UE 342 ]
 }
-"40
-[v _CleanKeeperController `(v ~T0 @X0 1 ef ]
-"41
-{
-[; ;cleankeeper.c: 40: void CleanKeeperController()
-[; ;cleankeeper.c: 41: {
-[e :U _CleanKeeperController ]
-[f ]
-"42
-[v F2955 `ui ~T0 @X0 1 s iState ]
-"43
-[v F2956 `ul ~T0 @X0 1 s iTimer ]
-"44
-[v F2957 `uc ~T0 @X0 1 s bSignalRelay ]
-"45
-[v _bGreen `uc ~T0 @X0 1 a ]
-[v _bRed `uc ~T0 @X0 1 a ]
-"46
-[v F2960 `l ~T0 @X0 1 s iOverLoadTimer ]
-[; ;cleankeeper.c: 42: static unsigned int iState;
-[; ;cleankeeper.c: 43: static unsigned long iTimer;
-[; ;cleankeeper.c: 44: static unsigned char bSignalRelay;
-[; ;cleankeeper.c: 45: unsigned char bGreen, bRed;
-[; ;cleankeeper.c: 46: static long iOverLoadTimer;
-[; ;cleankeeper.c: 50: bGreen = PORTAbits.RA0;
-"50
-[e = _bGreen . . _PORTAbits 0 0 ]
-[; ;cleankeeper.c: 51: bRed = PORTAbits.RA1;
-"51
-[e = _bRed . . _PORTAbits 0 1 ]
-[; ;cleankeeper.c: 54: if (iState == 0 )
-"54
-[e $ ! == F2955 -> -> 0 `i `ui 344  ]
-[; ;cleankeeper.c: 55: {
-"55
-{
-[; ;cleankeeper.c: 56: iState = 1;
-"56
-[e = F2955 -> -> 1 `i `ui ]
-"57
-}
-[e :U 344 ]
-[; ;cleankeeper.c: 57: }
-[; ;cleankeeper.c: 60: if (iState == 1)
-"60
-[e $ ! == F2955 -> -> 1 `i `ui 345  ]
-[; ;cleankeeper.c: 61: {
-"61
-{
-[; ;cleankeeper.c: 62: if ((bGreen == 1) || (bRed == 1))
-"62
-[e $ ! || == -> _bGreen `i -> 1 `i == -> _bRed `i -> 1 `i 346  ]
-[; ;cleankeeper.c: 63: {
-"63
-{
-[; ;cleankeeper.c: 66: if (bGreen == 1)
-"66
-[e $ ! == -> _bGreen `i -> 1 `i 347  ]
-[; ;cleankeeper.c: 67: {
-"67
-{
-[; ;cleankeeper.c: 68: LATAbits.LATA2 = 1;
-"68
-[e = . . _LATAbits 0 2 -> -> 1 `i `uc ]
-"69
-}
-[; ;cleankeeper.c: 69: }
-[e $U 348  ]
-"70
-[e :U 347 ]
-[; ;cleankeeper.c: 70: else
-[; ;cleankeeper.c: 71: {
-"71
-{
-[; ;cleankeeper.c: 72: LATAbits.LATA2 = 0;
-"72
-[e = . . _LATAbits 0 2 -> -> 0 `i `uc ]
-"73
-}
-[e :U 348 ]
-[; ;cleankeeper.c: 73: }
-[; ;cleankeeper.c: 75: iState = 2;
-"75
-[e = F2955 -> -> 2 `i `ui ]
-"76
-}
-[e :U 346 ]
-"77
-}
-[e :U 345 ]
-[; ;cleankeeper.c: 76: }
-[; ;cleankeeper.c: 77: }
-[; ;cleankeeper.c: 79: if (iState == 2)
-"79
-[e $ ! == F2955 -> -> 2 `i `ui 349  ]
-[; ;cleankeeper.c: 80: {
-"80
-{
-[; ;cleankeeper.c: 82: iTimer = (30120l*20);
-"82
-[e = F2956 -> * -> 30120 `l -> -> 20 `i `l `ul ]
-[; ;cleankeeper.c: 84: bSignalRelay = 1;
-"84
-[e = F2957 -> -> 1 `i `uc ]
-[; ;cleankeeper.c: 86: if ((bGreen == 0) && (bRed == 0))
-"86
-[e $ ! && == -> _bGreen `i -> 0 `i == -> _bRed `i -> 0 `i 350  ]
-[; ;cleankeeper.c: 87: iState = 3;
-"87
-[e = F2955 -> -> 3 `i `ui ]
-[e :U 350 ]
-"88
-}
-[e :U 349 ]
-[; ;cleankeeper.c: 88: }
-[; ;cleankeeper.c: 91: if (iState == 3)
-"91
-[e $ ! == F2955 -> -> 3 `i `ui 351  ]
-[; ;cleankeeper.c: 92: {
-"92
-{
-[; ;cleankeeper.c: 95: iTimer--;
-"95
-[e -- F2956 -> -> -> 1 `i `l `ul ]
-[; ;cleankeeper.c: 96: if (iTimer == 0)
-"96
-[e $ ! == F2956 -> -> -> 0 `i `l `ul 352  ]
-[; ;cleankeeper.c: 97: {
-"97
-{
-[; ;cleankeeper.c: 98: iState = 4;
-"98
-[e = F2955 -> -> 4 `i `ui ]
-"99
-}
-[e :U 352 ]
-[; ;cleankeeper.c: 99: }
-[; ;cleankeeper.c: 101: if ((bGreen == 1) || (bRed == 1))
-"101
-[e $ ! || == -> _bGreen `i -> 1 `i == -> _bRed `i -> 1 `i 353  ]
-[; ;cleankeeper.c: 102: {
-"102
-{
-[; ;cleankeeper.c: 104: if (bGreen == 1)
-"104
-[e $ ! == -> _bGreen `i -> 1 `i 354  ]
-[; ;cleankeeper.c: 105: LATAbits.LATA2 = 1;
-"105
-[e = . . _LATAbits 0 2 -> -> 1 `i `uc ]
-[e $U 355  ]
-"106
-[e :U 354 ]
-[; ;cleankeeper.c: 106: else
-[; ;cleankeeper.c: 107: LATAbits.LATA2 = 0;
-"107
-[e = . . _LATAbits 0 2 -> -> 0 `i `uc ]
-[e :U 355 ]
-[; ;cleankeeper.c: 108: iState = 2;
-"108
-[e = F2955 -> -> 2 `i `ui ]
-"109
-}
-[e :U 353 ]
-"110
-}
-[e :U 351 ]
-[; ;cleankeeper.c: 109: }
-[; ;cleankeeper.c: 110: }
-[; ;cleankeeper.c: 112: if (iState == 4)
-"112
-[e $ ! == F2955 -> -> 4 `i `ui 356  ]
-[; ;cleankeeper.c: 113: {
-"113
-{
-[; ;cleankeeper.c: 115: bSignalRelay = 0;
-"115
-[e = F2957 -> -> 0 `i `uc ]
-[; ;cleankeeper.c: 117: if ((bGreen == 0) && (bRed == 0))
-"117
-[e $ ! && == -> _bGreen `i -> 0 `i == -> _bRed `i -> 0 `i 357  ]
-[; ;cleankeeper.c: 118: {
-"118
-{
-[; ;cleankeeper.c: 119: iState = 1;
 "119
-[e = F2955 -> -> 1 `i `ui ]
+[v _CleanKeeperInit `(v ~T0 @X0 1 ef ]
 "120
-}
-[e :U 357 ]
+{
+[; ;cleankeeper.c: 119: void CleanKeeperInit()
+[; ;cleankeeper.c: 120: {
+[e :U _CleanKeeperInit ]
+[f ]
 "121
-}
-[e :U 356 ]
-[; ;cleankeeper.c: 120: }
-[; ;cleankeeper.c: 121: }
-[; ;cleankeeper.c: 124: if (iState == 99)
+[v _iHertz `i ~T0 @X0 1 a ]
+[; ;cleankeeper.c: 121: int iHertz;
+[; ;cleankeeper.c: 124: LATAbits.LATA4 = 0;
 "124
-[e $ ! == F2955 -> -> 99 `i `ui 358  ]
-[; ;cleankeeper.c: 125: {
-"125
-{
-[; ;cleankeeper.c: 127: if ( iOverLoadTimer > 0 )
-"127
-[e $ ! > F2960 -> -> 0 `i `l 359  ]
-[; ;cleankeeper.c: 128: {
-"128
-{
-[; ;cleankeeper.c: 129: LATCbits.LATC4 = 0;
-"129
-[e = . . _LATCbits 0 4 -> -> 0 `i `uc ]
-[; ;cleankeeper.c: 130: LATAbits.LATA4 = 0;
-"130
 [e = . . _LATAbits 0 4 -> -> 0 `i `uc ]
+[; ;cleankeeper.c: 127: iHertz = ConvertRpm2Hz(51);
+"127
+[e = _iHertz ( _ConvertRpm2Hz (1 -> 51 `i ]
+[; ;cleankeeper.c: 128: if (PORTAbits.RA0 == 1)
+"128
+[e $ ! == -> . . _PORTAbits 0 0 `i -> 1 `i 344  ]
+[; ;cleankeeper.c: 129: iHertz*=4;
+"129
+[e =* _iHertz -> 4 `i ]
+[e :U 344 ]
+[; ;cleankeeper.c: 130: if (PORTAbits.RA1 == 1)
+"130
+[e $ ! == -> . . _PORTAbits 0 1 `i -> 1 `i 345  ]
+[; ;cleankeeper.c: 131: iHertz*=16;
 "131
-}
-[; ;cleankeeper.c: 131: }
-[e $U 360  ]
+[e =* _iHertz -> 16 `i ]
+[e :U 345 ]
+[; ;cleankeeper.c: 132: PulseOut(iHertz);
 "132
-[e :U 359 ]
-[; ;cleankeeper.c: 132: else
-[; ;cleankeeper.c: 133: {
+[e ( _PulseOut (1 -> _iHertz `ui ]
+[; ;cleankeeper.c: 133: }
 "133
-{
-[; ;cleankeeper.c: 134: LATAbits.LATA4 = 1;
-"134
-[e = . . _LATAbits 0 4 -> -> 1 `i `uc ]
-[; ;cleankeeper.c: 135: iState = 4;
-"135
-[e = F2955 -> -> 4 `i `ui ]
-"136
+[e :UE 343 ]
 }
-[e :U 360 ]
-"137
-}
-[e :U 358 ]
-[; ;cleankeeper.c: 136: }
-[; ;cleankeeper.c: 137: }
-[; ;cleankeeper.c: 140: if ((bSignalRelay == 1) && (iState != 99))
-"140
-[e $ ! && == -> F2957 `i -> 1 `i != F2955 -> -> 99 `i `ui 361  ]
-[; ;cleankeeper.c: 141: {
-"141
-{
-[; ;cleankeeper.c: 143: LATCbits.LATC4 = 1;
-"143
-[e = . . _LATCbits 0 4 -> -> 1 `i `uc ]
-[; ;cleankeeper.c: 145: iOverLoadTimer++;
-"145
-[e ++ F2960 -> -> 1 `i `l ]
-[; ;cleankeeper.c: 146: if (iOverLoadTimer > (30120l*62))
-"146
-[e $ ! > F2960 * -> 30120 `l -> -> 62 `i `l 362  ]
-[; ;cleankeeper.c: 147: {
-"147
-{
-[; ;cleankeeper.c: 148: iOverLoadTimer = (30120l*62);
-"148
-[e = F2960 * -> 30120 `l -> -> 62 `i `l ]
-"149
-}
-[e :U 362 ]
-"150
-}
-[e :U 361 ]
-[; ;cleankeeper.c: 149: }
-[; ;cleankeeper.c: 150: }
-[; ;cleankeeper.c: 152: if ((bSignalRelay == 0) || (iState == 99))
 "152
-[e $ ! || == -> F2957 `i -> 0 `i == F2955 -> -> 99 `i `ui 363  ]
-[; ;cleankeeper.c: 153: {
+[v _CleanKeeperController `(v ~T0 @X0 1 ef ]
 "153
 {
-[; ;cleankeeper.c: 155: LATCbits.LATC4 = 0;
+[; ;cleankeeper.c: 152: void CleanKeeperController()
+[; ;cleankeeper.c: 153: {
+[e :U _CleanKeeperController ]
+[f ]
+"154
+[v F2960 `ui ~T0 @X0 1 s iState ]
 "155
-[e = . . _LATCbits 0 4 -> -> 0 `i `uc ]
-[; ;cleankeeper.c: 156: iOverLoadTimer--;
+[v F2961 `ul ~T0 @X0 1 s iTimer ]
 "156
-[e -- F2960 -> -> 1 `i `l ]
-[; ;cleankeeper.c: 157: if (iOverLoadTimer <= 0)
+[v F2962 `uc ~T0 @X0 1 s bSignalRelay ]
 "157
-[e $ ! <= F2960 -> -> 0 `i `l 364  ]
-[; ;cleankeeper.c: 158: {
+[v F2963 `uc ~T0 @X0 1 s bSignalDirection ]
 "158
-{
-[; ;cleankeeper.c: 159: iOverLoadTimer = 0;
+[v F2964 `uc ~T0 @X0 1 s bSignalOverload ]
 "159
-[e = F2960 -> -> 0 `i `l ]
+[v _bGreen `uc ~T0 @X0 1 a ]
+[v _bRed `uc ~T0 @X0 1 a ]
 "160
+[v F2967 `l ~T0 @X0 1 s iOverLoadTimer ]
+[; ;cleankeeper.c: 154: static unsigned int iState;
+[; ;cleankeeper.c: 155: static unsigned long iTimer;
+[; ;cleankeeper.c: 156: static unsigned char bSignalRelay;
+[; ;cleankeeper.c: 157: static unsigned char bSignalDirection;
+[; ;cleankeeper.c: 158: static unsigned char bSignalOverload;
+[; ;cleankeeper.c: 159: unsigned char bGreen, bRed;
+[; ;cleankeeper.c: 160: static long iOverLoadTimer;
+[; ;cleankeeper.c: 166: bGreen = PORTAbits.RA0;
+"166
+[e = _bGreen . . _PORTAbits 0 0 ]
+[; ;cleankeeper.c: 167: bRed = PORTAbits.RA1;
+"167
+[e = _bRed . . _PORTAbits 0 1 ]
+[; ;cleankeeper.c: 173: if ((iState == 0) || (iState >5))
+"173
+[e $ ! || == F2960 -> -> 0 `i `ui > F2960 -> -> 5 `i `ui 347  ]
+[; ;cleankeeper.c: 174: {
+"174
+{
+[; ;cleankeeper.c: 175: if ((bGreen == 0) && (bRed == 0))
+"175
+[e $ ! && == -> _bGreen `i -> 0 `i == -> _bRed `i -> 0 `i 348  ]
+[; ;cleankeeper.c: 176: {
+"176
+{
+[; ;cleankeeper.c: 177: iState = 1;
+"177
+[e = F2960 -> -> 1 `i `ui ]
+"178
+}
+[e :U 348 ]
+"179
+}
+[e :U 347 ]
+[; ;cleankeeper.c: 178: }
+[; ;cleankeeper.c: 179: }
+[; ;cleankeeper.c: 182: if (iState == 1)
+"182
+[e $ ! == F2960 -> -> 1 `i `ui 349  ]
+[; ;cleankeeper.c: 183: {
+"183
+{
+[; ;cleankeeper.c: 184: if ((bGreen == 1) || (bRed == 1))
+"184
+[e $ ! || == -> _bGreen `i -> 1 `i == -> _bRed `i -> 1 `i 350  ]
+[; ;cleankeeper.c: 185: {
+"185
+{
+[; ;cleankeeper.c: 188: if (bGreen == 1)
+"188
+[e $ ! == -> _bGreen `i -> 1 `i 351  ]
+[; ;cleankeeper.c: 189: {
+"189
+{
+[; ;cleankeeper.c: 190: bSignalDirection = 0;
+"190
+[e = F2963 -> -> 0 `i `uc ]
+"191
+}
+[; ;cleankeeper.c: 191: }
+[e $U 352  ]
+"192
+[e :U 351 ]
+[; ;cleankeeper.c: 192: else
+[; ;cleankeeper.c: 193: {
+"193
+{
+[; ;cleankeeper.c: 194: bSignalDirection = 1;
+"194
+[e = F2963 -> -> 1 `i `uc ]
+"195
+}
+[e :U 352 ]
+[; ;cleankeeper.c: 195: }
+[; ;cleankeeper.c: 197: iState = 2;
+"197
+[e = F2960 -> -> 2 `i `ui ]
+"198
+}
+[e :U 350 ]
+"199
+}
+[e :U 349 ]
+[; ;cleankeeper.c: 198: }
+[; ;cleankeeper.c: 199: }
+[; ;cleankeeper.c: 201: if (iState == 2)
+"201
+[e $ ! == F2960 -> -> 2 `i `ui 353  ]
+[; ;cleankeeper.c: 202: {
+"202
+{
+[; ;cleankeeper.c: 204: iTimer = (30120l*5);
+"204
+[e = F2961 -> * -> 30120 `l -> -> 5 `i `l `ul ]
+[; ;cleankeeper.c: 206: bSignalRelay = 1;
+"206
+[e = F2962 -> -> 1 `i `uc ]
+[; ;cleankeeper.c: 208: if ((bGreen == 0) && (bRed == 0))
+"208
+[e $ ! && == -> _bGreen `i -> 0 `i == -> _bRed `i -> 0 `i 354  ]
+[; ;cleankeeper.c: 209: {
+"209
+{
+[; ;cleankeeper.c: 210: iState = 3;
+"210
+[e = F2960 -> -> 3 `i `ui ]
+"211
+}
+[e :U 354 ]
+"212
+}
+[e :U 353 ]
+[; ;cleankeeper.c: 211: }
+[; ;cleankeeper.c: 212: }
+[; ;cleankeeper.c: 215: if (iState == 3)
+"215
+[e $ ! == F2960 -> -> 3 `i `ui 355  ]
+[; ;cleankeeper.c: 216: {
+"216
+{
+[; ;cleankeeper.c: 218: iTimer--;
+"218
+[e -- F2961 -> -> -> 1 `i `l `ul ]
+[; ;cleankeeper.c: 219: if (iTimer == 0)
+"219
+[e $ ! == F2961 -> -> -> 0 `i `l `ul 356  ]
+[; ;cleankeeper.c: 220: {
+"220
+{
+[; ;cleankeeper.c: 221: iState = 4;
+"221
+[e = F2960 -> -> 4 `i `ui ]
+"222
+}
+[e :U 356 ]
+[; ;cleankeeper.c: 222: }
+[; ;cleankeeper.c: 224: if ((bGreen == 1) || (bRed == 1))
+"224
+[e $ ! || == -> _bGreen `i -> 1 `i == -> _bRed `i -> 1 `i 357  ]
+[; ;cleankeeper.c: 225: {
+"225
+{
+[; ;cleankeeper.c: 226: iState = 1;
+"226
+[e = F2960 -> -> 1 `i `ui ]
+"227
+}
+[e :U 357 ]
+"228
+}
+[e :U 355 ]
+[; ;cleankeeper.c: 227: }
+[; ;cleankeeper.c: 228: }
+[; ;cleankeeper.c: 230: if (iState == 4)
+"230
+[e $ ! == F2960 -> -> 4 `i `ui 358  ]
+[; ;cleankeeper.c: 231: {
+"231
+{
+[; ;cleankeeper.c: 233: bSignalRelay = 0;
+"233
+[e = F2962 -> -> 0 `i `uc ]
+[; ;cleankeeper.c: 235: iState = 1;
+"235
+[e = F2960 -> -> 1 `i `ui ]
+"236
+}
+[e :U 358 ]
+[; ;cleankeeper.c: 236: }
+[; ;cleankeeper.c: 239: if (iState == 5)
+"239
+[e $ ! == F2960 -> -> 5 `i `ui 359  ]
+[; ;cleankeeper.c: 240: {
+"240
+{
+[; ;cleankeeper.c: 241: bSignalOverload = 1;
+"241
+[e = F2964 -> -> 1 `i `uc ]
+[; ;cleankeeper.c: 242: bSignalRelay = 0;
+"242
+[e = F2962 -> -> 0 `i `uc ]
+[; ;cleankeeper.c: 245: if ( iOverLoadTimer <= (30120l*18) )
+"245
+[e $ ! <= F2967 * -> 30120 `l -> -> 18 `i `l 360  ]
+[; ;cleankeeper.c: 246: {
+"246
+{
+[; ;cleankeeper.c: 247: bSignalOverload = 0;
+"247
+[e = F2964 -> -> 0 `i `uc ]
+[; ;cleankeeper.c: 248: iState = 0;
+"248
+[e = F2960 -> -> 0 `i `ui ]
+"249
+}
+[e :U 360 ]
+"250
+}
+[e :U 359 ]
+[; ;cleankeeper.c: 249: }
+[; ;cleankeeper.c: 250: }
+[; ;cleankeeper.c: 257: if ( iOverLoadTimer >= (30120l*20) )
+"257
+[e $ ! >= F2967 * -> 30120 `l -> -> 20 `i `l 361  ]
+[; ;cleankeeper.c: 258: {
+"258
+{
+[; ;cleankeeper.c: 259: iState = 5;
+"259
+[e = F2960 -> -> 5 `i `ui ]
+"260
+}
+[e :U 361 ]
+[; ;cleankeeper.c: 260: }
+[; ;cleankeeper.c: 263: if (bSignalRelay == 1)
+"263
+[e $ ! == -> F2962 `i -> 1 `i 362  ]
+[; ;cleankeeper.c: 264: {
+"264
+{
+[; ;cleankeeper.c: 266: LATCbits.LATC4 = 1;
+"266
+[e = . . _LATCbits 0 4 -> -> 1 `i `uc ]
+[; ;cleankeeper.c: 269: if (bSignalDirection == 1)
+"269
+[e $ ! == -> F2963 `i -> 1 `i 363  ]
+[; ;cleankeeper.c: 270: {
+"270
+{
+[; ;cleankeeper.c: 271: LATAbits.LATA2 = 1;
+"271
+[e = . . _LATAbits 0 2 -> -> 1 `i `uc ]
+"272
+}
+[; ;cleankeeper.c: 272: }
+[e $U 364  ]
+"273
+[e :U 363 ]
+[; ;cleankeeper.c: 273: else
+[; ;cleankeeper.c: 274: {
+"274
+{
+[; ;cleankeeper.c: 275: LATAbits.LATA2 = 0;
+"275
+[e = . . _LATAbits 0 2 -> -> 0 `i `uc ]
+"276
 }
 [e :U 364 ]
-"161
-}
-[e :U 363 ]
-[; ;cleankeeper.c: 160: }
-[; ;cleankeeper.c: 161: }
-[; ;cleankeeper.c: 164: if (iOverLoadTimer >= (30120l*62))
-"164
-[e $ ! >= F2960 * -> 30120 `l -> -> 62 `i `l 365  ]
-[; ;cleankeeper.c: 165: {
-"165
+[; ;cleankeeper.c: 276: }
+[; ;cleankeeper.c: 279: iOverLoadTimer++;
+"279
+[e ++ F2967 -> -> 1 `i `l ]
+[; ;cleankeeper.c: 280: if (iOverLoadTimer > (30120l*20))
+"280
+[e $ ! > F2967 * -> 30120 `l -> -> 20 `i `l 365  ]
+[; ;cleankeeper.c: 281: {
+"281
 {
-[; ;cleankeeper.c: 166: iState = 99;
-"166
-[e = F2955 -> -> 99 `i `ui ]
-"167
+[; ;cleankeeper.c: 282: iOverLoadTimer = (30120l*20);
+"282
+[e = F2967 * -> 30120 `l -> -> 20 `i `l ]
+"283
 }
 [e :U 365 ]
-[; ;cleankeeper.c: 167: }
-[; ;cleankeeper.c: 168: }
-"168
-[e :UE 343 ]
+"284
+}
+[e :U 362 ]
+[; ;cleankeeper.c: 283: }
+[; ;cleankeeper.c: 284: }
+[; ;cleankeeper.c: 286: if (bSignalRelay == 0)
+"286
+[e $ ! == -> F2962 `i -> 0 `i 366  ]
+[; ;cleankeeper.c: 287: {
+"287
+{
+[; ;cleankeeper.c: 289: LATCbits.LATC4 = 0;
+"289
+[e = . . _LATCbits 0 4 -> -> 0 `i `uc ]
+[; ;cleankeeper.c: 292: iOverLoadTimer--;
+"292
+[e -- F2967 -> -> 1 `i `l ]
+[; ;cleankeeper.c: 293: if (iOverLoadTimer <= 0)
+"293
+[e $ ! <= F2967 -> -> 0 `i `l 367  ]
+[; ;cleankeeper.c: 294: {
+"294
+{
+[; ;cleankeeper.c: 295: iOverLoadTimer = 0;
+"295
+[e = F2967 -> -> 0 `i `l ]
+"296
+}
+[e :U 367 ]
+"297
+}
+[e :U 366 ]
+[; ;cleankeeper.c: 296: }
+[; ;cleankeeper.c: 297: }
+[; ;cleankeeper.c: 299: if (bSignalOverload)
+"299
+[e $ ! != -> F2964 `i -> -> -> 0 `i `uc `i 368  ]
+[; ;cleankeeper.c: 300: {
+"300
+{
+[; ;cleankeeper.c: 301: LATAbits.LATA4 = 1;
+"301
+[e = . . _LATAbits 0 4 -> -> 1 `i `uc ]
+"302
+}
+[; ;cleankeeper.c: 302: }
+[e $U 369  ]
+"303
+[e :U 368 ]
+[; ;cleankeeper.c: 303: else
+[; ;cleankeeper.c: 304: {
+"304
+{
+[; ;cleankeeper.c: 305: LATAbits.LATA4 = 0;
+"305
+[e = . . _LATAbits 0 4 -> -> 0 `i `uc ]
+"306
+}
+[e :U 369 ]
+[; ;cleankeeper.c: 306: }
+[; ;cleankeeper.c: 307: }
+"307
+[e :UE 346 ]
 }

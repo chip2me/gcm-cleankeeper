@@ -10,9 +10,9 @@ CND_CONF=default
 CND_DISTDIR=dist
 TMPDIR=build/${CND_CONF}/${IMAGE_TYPE}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/MOD-IO2.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-OUTPUT_BASENAME=MOD-IO2.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-PACKAGE_TOP_DIR=mod-io2/
+OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/gcm-cleankeeper.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+OUTPUT_BASENAME=gcm-cleankeeper.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+PACKAGE_TOP_DIR=gcm-cleankeeper/
 
 # Functions
 function checkReturnCode
@@ -57,15 +57,15 @@ mkdir -p ${TMPDIR}
 
 # Copy files and create directories and links
 cd "${TOP}"
-makeDirectory ${TMPDIR}/mod-io2/bin
+makeDirectory ${TMPDIR}/gcm-cleankeeper/bin
 copyFileToTmpDir "${OUTPUT_PATH}" "${TMPDIR}/${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}" 0755
 
 
 # Generate tar file
 cd "${TOP}"
-rm -f ${CND_DISTDIR}/${CND_CONF}/package/mod-io2.tar
+rm -f ${CND_DISTDIR}/${CND_CONF}/package/gcm-cleankeeper.tar
 cd ${TMPDIR}
-tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/mod-io2.tar *
+tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/gcm-cleankeeper.tar *
 checkReturnCode
 
 # Cleanup

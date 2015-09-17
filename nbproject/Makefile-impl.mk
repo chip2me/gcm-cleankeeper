@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=MOD-IO2
+PROJECTNAME=gcm-cleankeeper
 
 # Active Configuration
 DEFAULTCONF=default

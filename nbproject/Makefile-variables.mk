@@ -6,8 +6,8 @@
 CND_BASEDIR=`pwd`
 # default configuration
 CND_ARTIFACT_DIR_default=dist/default/production
-CND_ARTIFACT_NAME_default=MOD-IO2.production.hex
-CND_ARTIFACT_PATH_default=dist/default/production/MOD-IO2.production.hex
+CND_ARTIFACT_NAME_default=gcm-cleankeeper.production.hex
+CND_ARTIFACT_PATH_default=dist/default/production/gcm-cleankeeper.production.hex
 CND_PACKAGE_DIR_default=${CND_DISTDIR}/default/package
-CND_PACKAGE_NAME_default=mod-io2.tar
-CND_PACKAGE_PATH_default=${CND_DISTDIR}/default/package/mod-io2.tar
+CND_PACKAGE_NAME_default=gcm-cleankeeper.tar
+CND_PACKAGE_PATH_default=${CND_DISTDIR}/default/package/gcm-cleankeeper.tar
