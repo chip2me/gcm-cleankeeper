@@ -46,6 +46,8 @@
  * 
  * PR2 = ( 1 / Freq * 0.000016) -1
  *  
+ * CHANGES:
+ * 2015 SEP 16: Duty-cycle now changed to 50% for all frequencies.
  */
 
 
@@ -150,7 +152,7 @@ void CleanKeeperInit()
 void CleanKeeperController()
 {
     static unsigned int iState;
-    static long iTimer;
+    static unsigned long iTimer;
     static unsigned char bSignalRelay;
     static unsigned char bSignalDirection;
     static unsigned char bSignalOverload;
@@ -168,7 +170,7 @@ void CleanKeeperController()
 // STATE MACHINE PART
 //*****************************************************************************
     // Default - catch if state out of bounds
-    if (iState == 0 )  
+    if ((iState == 0) || (iState >5))  
     {
         if ((bGreen == 0) && (bRed == 0)) // Both GREEN and RED released
         {
@@ -214,7 +216,7 @@ void CleanKeeperController()
     {
         //Decrease timer until elapsed
         iTimer--;
-        if (iTimer <= 0) // Timer elapsed
+        if (iTimer == 0) // Timer elapsed
         {
             iState = 4;                 
         }
@@ -234,7 +236,7 @@ void CleanKeeperController()
     }
 
     // STATE OVERLOAD 
-    if (iState == 99)
+    if (iState == 5)
     {
         bSignalOverload = true; // Request OVERLOAD LAMP ON
         bSignalRelay = 0; // Request motor driver off
@@ -254,7 +256,7 @@ void CleanKeeperController()
     // Check for overload
     if ( iOverLoadTimer >= OVER_LOAD_TIME ) 
     {
-        iState = 99;     // Enter overload state     
+        iState = 5;     // Enter overload state     
     }
 
     // Handle Output based on signal settings
@@ -303,6 +305,3 @@ void CleanKeeperController()
             GPIO3_LAT = 0;  // OVERLOAD LAMP OFF
     }
 }
-
-
-
