@@ -123,6 +123,10 @@ void CleanKeeperInit()
 
     //Start pulse out
     iHertz = ConvertRpm2Hz(MOTOR_RPM);
+    if (GPIO0_PORT == 1) // ####################################
+        iHertz*=4;
+    if (GPIO1_PORT == 1) // ####################################
+        iHertz*=16;
     PulseOut(iHertz); // Output PWM pulse (duty cycle 50%)
 }
 

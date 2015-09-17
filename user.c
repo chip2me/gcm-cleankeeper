@@ -20,8 +20,8 @@ void InitApp(void)
 {
 	InitGPIO();
 	InitAddress();
-	InitI2C();
-	InitInterupts();
+	//CM InitI2C();
+	//CM InitInterupts();
 }
 
 void InitI2C(void)
@@ -39,7 +39,7 @@ void InitGPIO(void)
 	ANSELA = 0x00;
 
 	/* Make all inputs */
-	TRISA = 0xFF;
+	TRISA = 0x00; //CM? All port A as output
 	TRISC = 0xFF;
 
 	/* Clear LAT registers */
@@ -57,7 +57,7 @@ void InitGPIO(void)
 	REL2 = 0;
 
 	OPTION_REGbits.nWPUEN = 0;
-	WPUAbits.WPUA = 0x20;
+	WPUAbits.WPUA = 0x20; //CM? *0x20 or 0xFF
 	JMP_TRIS = 1;
 	JMP_LAT = 0;
 }
@@ -343,3 +343,93 @@ unsigned int CommandGetAnalog(unsigned char channel)
 	
 	return data;
 }
+
+
+
+// Delay function calibrated to approx. ms
+// CM 24. april 2015
+Wait_ms(int iDelay)
+{
+    int iCount, iInnerCount;
+    const int iWAIT = 116; //Calibration constant
+    // Wait
+	for(iCount = 0; iCount < iDelay; iCount++)
+    {
+        asm("NOP");
+            // Wait
+            for(iInnerCount = 0; iInnerCount < iWAIT; iInnerCount++)
+            {
+                asm("NOP");
+                asm("NOP");
+                asm("NOP");
+                asm("NOP");
+                asm("NOP");
+                asm("NOP");
+            }
+    }
+}
+
+
+
+/** Handle "illegal" frequencies 
+    Could be solved by investigating register more deeply...
+*/
+unsigned int LimitFreq(unsigned int iFreq)
+{
+    unsigned int iLimited;
+    
+    if (iFreq <= 245)
+        iLimited = 250;
+    else if ((iFreq >= 920) && (iFreq <= 1000))
+        iLimited = 1001;
+    else if (iFreq >= 10000)
+        iLimited = 10000;
+    else
+        iLimited = iFreq;
+    return iLimited;
+}
+
+
+
+void SetPWMDutyCycle(unsigned int DutyCycle)    // Give a value in between 0 and 128 for DutyCycle 
+{ 
+    PWM2DCH = DutyCycle; // Put MSB 8 bits in PWMDCH    
+    PWM2DCL = 0x00;      // Assign Last 2 LSBs to PWMDCL 
+} 
+
+
+
+// PWM out for Stepper Driver pulse
+// CM 27. april 2015
+void PulseOut(unsigned int iFreq)
+{
+    unsigned int iPR2;
+    unsigned int iLimitedFreq;
+    
+    iLimitedFreq = LimitFreq(iFreq);
+    
+    //CM TRISC   = 0b11100111;      // Make C port as output
+    // After line above removed the REL2 works again :-)
+
+    TRISCbits.TRISC3 = 0; // PWM2 out
+    PWM2CON = 0xC0;      // Configure PWM1 module in PWM mode.
+    PIR2    = 0x00; 
+//    SetPWMDutyCycle(95); // Intialize the PWM to 50 % duty cycle  (*64))
+
+    //Calculate PR2 to give correct output frequency
+    if (iLimitedFreq<=920)
+    {
+        PR2 = (1/(iLimitedFreq*0.000016)-1);
+        T2CON   = 0x07;      // Bit 2 = timer1 enable, bit 0/1 = prescale 
+    }
+    else
+    {
+        PR2 = (1/(iLimitedFreq*0.000004)-1);
+        T2CON   = 0x06;      // Bit 2 = timer1 enable, bit 0/1 = prescale 
+    }
+    iPR2 = PR2;
+    iPR2=iPR2/2;
+    SetPWMDutyCycle(iPR2); // Intialize the PWM to 50 % duty cycle  (*64))
+} 
+
+
