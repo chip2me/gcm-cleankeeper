@@ -1,0 +1,43 @@
+MOD-IO2 (Build, Load)
+---------------------
+make -f nbproject/Makefile-default.mk SUBPROJECTS= .build-conf
+make[1]: Entering directory 'C:/Users/cm.GCM/Documents/GitHub/gcm-cleankeeper'
+make  -f nbproject/Makefile-default.mk dist/default/production/gcm-cleankeeper.production.hex
+make[2]: Entering directory 'C:/Users/cm.GCM/Documents/GitHub/gcm-cleankeeper'
+make[2]: 'dist/default/production/gcm-cleankeeper.production.hex' is up to date.
+make[2]: Leaving directory 'C:/Users/cm.GCM/Documents/GitHub/gcm-cleankeeper'
+make[1]: Leaving directory 'C:/Users/cm.GCM/Documents/GitHub/gcm-cleankeeper'
+
+BUILD SUCCESSFUL (total time: 252ms)
+Loading code from C:/Users/cm.GCM/Documents/GitHub/gcm-cleankeeper/dist/default/production/gcm-cleankeeper.production.hex...
+Loading completed
+Connecting to programmer...
+Programming target...
+Programming completed
+Running target...
+
+
+
+PICkit 3
+-----------------------------
+
+*****************************************************
+
+Connecting to MPLAB PICkit 3...
+
+Currently loaded firmware on PICkit 3
+Firmware Suite Version.....01.28.90 *
+Firmware type..............Enhanced Midrange
+
+Target voltage detected
+Target device PIC16F1503 found.
+Device ID Revision = 0
+
+The following memory area(s) will be programmed:
+program memory: start address = 0x0, end address = 0x7ff
+configuration memory
+
+Device Erased...
+
+Programming...
+Programming/Verify complete

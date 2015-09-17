@@ -1,0 +1,13 @@
+Seneste ændring i toppen:
+-------------------------------
+
+27. maj 2015
+MOD-IO2
+Kører OK, men følgende kommentarer:
+* Haoya motorstyring støjer meget, derfor Tecnosoft til demonstrations!
+* Set flere gange at den kører mere end de 20 sekunder (BUG)
+
+
+April 2015
+CleanKeeper lavet ud fra følgende version:
+MOD-IO2_firmware_v_3_1.zip

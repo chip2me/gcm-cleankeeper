@@ -3039,9 +3039,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;cleankeeper.c: 202: {
 "202
 {
-[; ;cleankeeper.c: 204: iTimer = (30120l*5);
+[; ;cleankeeper.c: 204: iTimer = (30120l*20);
 "204
-[e = F2961 -> * -> 30120 `l -> -> 5 `i `l `ul ]
+[e = F2961 -> * -> 30120 `l -> -> 20 `i `l `ul ]
 [; ;cleankeeper.c: 206: bSignalRelay = 1;
 "206
 [e = F2962 -> -> 1 `i `uc ]
@@ -3129,9 +3129,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;cleankeeper.c: 242: bSignalRelay = 0;
 "242
 [e = F2962 -> -> 0 `i `uc ]
-[; ;cleankeeper.c: 245: if ( iOverLoadTimer <= (30120l*18) )
+[; ;cleankeeper.c: 245: if ( iOverLoadTimer <= (30120l*540) )
 "245
-[e $ ! <= F2967 * -> 30120 `l -> -> 18 `i `l 360  ]
+[e $ ! <= F2967 * -> 30120 `l -> -> 540 `i `l 360  ]
 [; ;cleankeeper.c: 246: {
 "246
 {
@@ -3149,9 +3149,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e :U 359 ]
 [; ;cleankeeper.c: 249: }
 [; ;cleankeeper.c: 250: }
-[; ;cleankeeper.c: 257: if ( iOverLoadTimer >= (30120l*20) )
+[; ;cleankeeper.c: 257: if ( iOverLoadTimer >= (30120l*600) )
 "257
-[e $ ! >= F2967 * -> 30120 `l -> -> 20 `i `l 361  ]
+[e $ ! >= F2967 * -> 30120 `l -> -> 600 `i `l 361  ]
 [; ;cleankeeper.c: 258: {
 "258
 {
@@ -3200,15 +3200,15 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;cleankeeper.c: 279: iOverLoadTimer++;
 "279
 [e ++ F2967 -> -> 1 `i `l ]
-[; ;cleankeeper.c: 280: if (iOverLoadTimer > (30120l*20))
+[; ;cleankeeper.c: 280: if (iOverLoadTimer > (30120l*600))
 "280
-[e $ ! > F2967 * -> 30120 `l -> -> 20 `i `l 365  ]
+[e $ ! > F2967 * -> 30120 `l -> -> 600 `i `l 365  ]
 [; ;cleankeeper.c: 281: {
 "281
 {
-[; ;cleankeeper.c: 282: iOverLoadTimer = (30120l*20);
+[; ;cleankeeper.c: 282: iOverLoadTimer = (30120l*600);
 "282
-[e = F2967 * -> 30120 `l -> -> 20 `i `l ]
+[e = F2967 * -> 30120 `l -> -> 600 `i `l ]
 "283
 }
 [e :U 365 ]
