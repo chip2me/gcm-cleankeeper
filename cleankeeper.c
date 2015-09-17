@@ -48,6 +48,8 @@
  *  
  * CHANGES:
  * 2015 SEP 16: Duty-cycle now changed to 50% for all frequencies.
+ * 2015 SEP 17: Changed iState usages BUGFIX for sometimes running >> 20 sec.
+ * 
  */
 
 
